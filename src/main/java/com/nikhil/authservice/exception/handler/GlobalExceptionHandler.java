@@ -2,6 +2,8 @@ package com.nikhil.authservice.exception.handler;
 
 import com.nikhil.authservice.common.response.ApiResponse;
 import com.nikhil.authservice.exception.custom.EmailAlreadyExistsException;
+import com.nikhil.authservice.exception.custom.EmailNotFoundException;
+import com.nikhil.authservice.exception.custom.InvalidCredentialsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,4 +41,22 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiResponse , HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<ApiResponse> EmailNotFoundExceptionHandler(EmailNotFoundException e){
+        String message = "Invalid email or password.";
+        ApiResponse apiResponse = new ApiResponse<>(false,message,null, LocalDateTime.now());
+
+        return new ResponseEntity<>(apiResponse , HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiResponse> InvalidCredentialsExceptionHandler(InvalidCredentialsException e){
+        String message = "Invalid email or password..";
+        ApiResponse apiResponse = new ApiResponse<>(false,message,null, LocalDateTime.now());
+
+        return new ResponseEntity<>(apiResponse , HttpStatus.UNAUTHORIZED);
+    }
+
 }
