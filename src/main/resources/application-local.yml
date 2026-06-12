@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authentication_service
+    username: auth_user
+    password: auth_password
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      ###
+      # in case of update hibernate modifies db schema automatically, so it can be dangerous .
+      # Because of that we use validate.
+      # flyway owns schema changes , hibernate only validates schema.
+      ###
+    open-in-view: false
+
+  flyway:
+    enabled: true

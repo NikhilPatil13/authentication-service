@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:posgtresql://localhost:5432/authentication_service
+    username: dev_user
+    password: dev_password
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    open-in-view: false
+
+  flyway:
+    enabled: true
