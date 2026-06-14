@@ -1,8 +1,11 @@
 package com.nikhil.authservice.auth.service;
 
 import com.nikhil.authservice.auth.dto.request.LoginRequest;
+import com.nikhil.authservice.auth.dto.request.LogoutRequest;
+import com.nikhil.authservice.auth.dto.request.RefreshTokenRequest;
 import com.nikhil.authservice.auth.dto.request.RegisterUserRequest;
 import com.nikhil.authservice.auth.dto.response.LoginResponse;
+import com.nikhil.authservice.auth.dto.response.RefreshTokenResponse;
 import com.nikhil.authservice.auth.dto.response.RegisterUserResponse;
 
 public interface AuthService {
@@ -17,4 +20,13 @@ public interface AuthService {
     * */
     LoginResponse login(LoginRequest loginRequest);
 
+    /*
+    *   abstract method to refresh token
+    * */
+    RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+    /*
+    *   abstract method to logout
+    * */
+    void logout(LogoutRequest logoutRequest);
 }

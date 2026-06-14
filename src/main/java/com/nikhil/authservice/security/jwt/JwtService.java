@@ -22,7 +22,7 @@ public class JwtService {
 
     // method to generate token
     public String generateToken(String email){
-        System.out.println("in generate token");
+
         // taking expiration date
         Date now = new Date();
 
@@ -40,7 +40,6 @@ public class JwtService {
 
     // method to generate secret key
     private SecretKey getSigningKey(){
-        System.out.println("in getSigninKey()");
         byte[] keyBytes = this.jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
 
         return Keys.hmacShaKeyFor(keyBytes);
@@ -48,13 +47,12 @@ public class JwtService {
 
     // method to extract username
     public String extractUsername(String token){
-        System.out.println("in extractUsername()");
         return extractAllClaims(token).getSubject();
     }
 
     // extracts all claims
     private Claims extractAllClaims(String token){
-        System.out.println("in extractAllClaims()");
+
         return Jwts.parser()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -64,7 +62,6 @@ public class JwtService {
 
     // method to check is token valid or not
     public  boolean isTokenValid(String token, String email){
-        System.out.println("in isTokenValid()");
         String username = extractUsername(token);
 
         return username.equals(email) && !isTokenExpired(token);
@@ -72,7 +69,6 @@ public class JwtService {
 
     // method to check expiration of token
     private boolean isTokenExpired(String token){
-        System.out.println("in isTokenExpired()");
         Date expiration = extractAllClaims(token).getExpiration();
 
         return expiration.before(new Date());

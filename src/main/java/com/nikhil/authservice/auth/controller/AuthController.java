@@ -1,8 +1,11 @@
 package com.nikhil.authservice.auth.controller;
 
 import com.nikhil.authservice.auth.dto.request.LoginRequest;
+import com.nikhil.authservice.auth.dto.request.LogoutRequest;
+import com.nikhil.authservice.auth.dto.request.RefreshTokenRequest;
 import com.nikhil.authservice.auth.dto.request.RegisterUserRequest;
 import com.nikhil.authservice.auth.dto.response.LoginResponse;
+import com.nikhil.authservice.auth.dto.response.RefreshTokenResponse;
 import com.nikhil.authservice.auth.dto.response.RegisterUserResponse;
 import com.nikhil.authservice.auth.service.AuthService;
 import com.nikhil.authservice.common.response.ApiResponse;
@@ -64,6 +67,34 @@ public class AuthController {
                 authentication.getName(),
                 LocalDateTime.now()
         ));
+    }
+
+
+    /*
+     *   Controller method to handle refresh token api request
+     * */
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>>refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        RefreshTokenResponse refreshTokenResponse = this.authService.refreshToken(refreshTokenRequest);
+
+        // preparing response
+        ApiResponse<RefreshTokenResponse> apiResponse = new ApiResponse<>(true,"Token refreshed.",refreshTokenResponse,LocalDateTime.now());
+
+        return new ResponseEntity<>(apiResponse , HttpStatus.OK);
+    }
+
+
+    /*
+     *   Controller method to handle logout
+     * */
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>>logout(@RequestBody LogoutRequest logoutRequest){
+        this.authService.logout(logoutRequest);
+
+        // preparing response
+        ApiResponse<RefreshTokenResponse> apiResponse = new ApiResponse<>(true,"Logout sucessfully.",null,LocalDateTime.now());
+
+        return new ResponseEntity<>(apiResponse , HttpStatus.OK);
     }
 
 }

@@ -1,9 +1,13 @@
 package com.nikhil.authservice.auth.service.impl;
 
 import com.nikhil.authservice.auth.dto.request.LoginRequest;
+import com.nikhil.authservice.auth.dto.request.LogoutRequest;
+import com.nikhil.authservice.auth.dto.request.RefreshTokenRequest;
 import com.nikhil.authservice.auth.dto.request.RegisterUserRequest;
 import com.nikhil.authservice.auth.dto.response.LoginResponse;
+import com.nikhil.authservice.auth.dto.response.RefreshTokenResponse;
 import com.nikhil.authservice.auth.dto.response.RegisterUserResponse;
+import com.nikhil.authservice.auth.entity.RefreshToken;
 import com.nikhil.authservice.auth.service.AuthService;
 import com.nikhil.authservice.exception.custom.EmailAlreadyExistsException;
 import com.nikhil.authservice.exception.custom.EmailNotFoundException;
@@ -17,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -32,6 +37,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
+
+    private final RefreshTokenServiceImpl refreshTokenServiceImpl;
 
     /*
     *   method name : register
@@ -99,9 +106,50 @@ public class AuthServiceImpl implements AuthService {
         // password matched
         // generate JWT token
         String token = this.jwtService.generateToken(foundUser.getEmail());
+
+        // generate Refresh token
+        RefreshToken refreshToken = this.refreshTokenServiceImpl.createRefreshToken(foundUser);
+
         // map foundUser with LoginResponse (DTO) and return
         LoginResponse loginResponse =  this.modelMapper.map(foundUser , LoginResponse.class);
         loginResponse.setAccessToken(token);
+        loginResponse.setRefreshToken(refreshToken.getToken());
         return loginResponse;
+    }
+
+    /*
+     *   method name : refreshToken
+     *   inputs : RefreshTokenRequest (DTO)
+     *   returns : RefreshTokenResponse (DTO)
+     *   working : Used to refresh tokens
+     * */
+    @Override
+    @Transactional
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+
+        RefreshToken refreshToken = refreshTokenServiceImpl.validateRefreshToken(
+                refreshTokenRequest.getRefreshToken()
+        );
+
+        // if access token is expired then generate refresh token
+        String newAccessToken = jwtService.generateToken(
+                refreshToken.getUser().getEmail()
+        );
+
+        return new RefreshTokenResponse(newAccessToken);
+    }
+
+
+    /*
+     *   method name : logout
+     *   inputs : LogoutRquest (DTO)
+     *   returns : void
+     *   working : Used to logout user
+     * */
+    @Override
+    public void logout(LogoutRequest logoutRequest) {
+        this.refreshTokenServiceImpl.revokeRefreshToken(
+                logoutRequest.getRefreshToken()
+        );
     }
 }
