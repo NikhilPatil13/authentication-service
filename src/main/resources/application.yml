@@ -7,3 +7,6 @@ spring:
 jwt:
   secret-key: my-secret-key-for-development-purpose-only
   expiration: 3600000 # 60 minutes
+
+refresh-token:
+  expiration: 604800000 # 7 days

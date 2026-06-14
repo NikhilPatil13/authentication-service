@@ -4,6 +4,7 @@ import com.nikhil.authservice.common.response.ApiResponse;
 import com.nikhil.authservice.exception.custom.EmailAlreadyExistsException;
 import com.nikhil.authservice.exception.custom.EmailNotFoundException;
 import com.nikhil.authservice.exception.custom.InvalidCredentialsException;
+import com.nikhil.authservice.exception.custom.InvalidRefreshTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -58,5 +59,13 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiResponse , HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<ApiResponse> InvalidRefreshTokenExceptionHandler(InvalidRefreshTokenException e){
+        ApiResponse apiResponse = new ApiResponse<>(false,e.getMessage(),null, LocalDateTime.now());
+
+        return new ResponseEntity<>(apiResponse , HttpStatus.UNAUTHORIZED);
+    }
+
 
 }
