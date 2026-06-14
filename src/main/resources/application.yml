@@ -3,3 +3,7 @@ spring:
     name: authentication-service
   profiles:
     active: local
+
+jwt:
+  secret-key: my-secret-key-for-development-purpose-only
+  expiration: 3600000 # 60 minutes

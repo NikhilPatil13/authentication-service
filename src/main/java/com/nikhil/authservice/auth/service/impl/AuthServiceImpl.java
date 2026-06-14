@@ -8,6 +8,8 @@ import com.nikhil.authservice.auth.service.AuthService;
 import com.nikhil.authservice.exception.custom.EmailAlreadyExistsException;
 import com.nikhil.authservice.exception.custom.EmailNotFoundException;
 import com.nikhil.authservice.exception.custom.InvalidCredentialsException;
+import com.nikhil.authservice.security.jwt.JwtProperties;
+import com.nikhil.authservice.security.jwt.JwtService;
 import com.nikhil.authservice.user.entity.User;
 import com.nikhil.authservice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     private final ModelMapper modelMapper;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtService jwtService;
 
     /*
     *   method name : register
@@ -93,7 +97,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // password matched
+        // generate JWT token
+        String token = this.jwtService.generateToken(foundUser.getEmail());
         // map foundUser with LoginResponse (DTO) and return
-        return this.modelMapper.map(foundUser , LoginResponse.class);
+        LoginResponse loginResponse =  this.modelMapper.map(foundUser , LoginResponse.class);
+        loginResponse.setAccessToken(token);
+        return loginResponse;
     }
 }
